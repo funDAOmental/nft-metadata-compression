@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 
 contract NFTextLib {
     // Roughly corresponds to ░▒▓│┤┐└┴├├─┼┘┌█
-    bytes32 public charset = 0x969196929693948294a49490949494b4949c949c948094bc9498948c96880000;
+    bytes32 public constant CHARSET = 0x969196929693948294a49490949494b4949c949c948094bc9498948c96880000;
 
     function decode(bytes calldata onChainData) public pure returns (string memory) {
         bytes memory buf = new bytes(3 * onChainData.length);
@@ -19,14 +19,10 @@ contract NFTextLib {
 
     function writeChar(bytes memory buf, uint pos, uint8 charsetIndex) private pure {
         uint i = 3 * pos;
+        uint ci = 2 * charsetIndex;
 
-        if (charsetIndex == 0) {
-            buf[i++] = "x";
-        } else {
-            buf[i++] = "y";
-        }
-
-        buf[i++] = ".";
-        buf[i++] = ".";
+        buf[i++] = 0xe2;
+        buf[i++] = CHARSET[ci++];
+        buf[i] = CHARSET[ci];
     }
 }
