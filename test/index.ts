@@ -1,8 +1,12 @@
+/* eslint-disable prettier/prettier */
+
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
 // eslint-disable-next-line node/no-missing-import
 import { NFTextLib } from "../typechain/index";
+// eslint-disable-next-line node/no-missing-import
+import { encodeLines } from "../encode";
 
 const deploy = (() => {
   let nftextLib: NFTextLib | undefined;
@@ -24,9 +28,15 @@ describe("NFTextLib", function () {
     await deploy();
   });
 
-  it("decodes", async () => {
+  it("decodes 2x2 box", async () => {
     const nftextLib = await deploy();
 
-    expect(await nftextLib.decode([0x02, 0xe6, 0x7d])).to.equal("┌┐\n└┘\n");
+    const boxData = encodeLines(
+      "┌┐",
+      "└┘",
+    );
+
+    expect(boxData.toString('hex')).to.equal('02e67d');
+    expect(await nftextLib.decode(boxData)).to.equal("┌┐\n└┘\n");
   });
 });
