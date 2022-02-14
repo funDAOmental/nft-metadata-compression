@@ -18,15 +18,15 @@ contract NFTextLib {
     }
 
     function writeChar(bytes memory buf, uint pos, uint8 charsetIndex) private pure {
-        uint bufPos = 3 * pos;
+        uint i = 3 * pos;
 
         if (charsetIndex == 0) {
-            buf[bufPos++] = "x";
+            buf[i++] = "x";
         } else {
-            buf[bufPos++] = "y";
+            buf[i++] = "y";
         }
 
-        buf[bufPos++] = ".";
-        buf[bufPos++] = ".";
+        buf[i++] = ".";
+        buf[i++] = ".";
     }
 }
