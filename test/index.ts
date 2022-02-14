@@ -27,6 +27,6 @@ describe("NFTextLib", function () {
   it("decodes", async () => {
     const nftextLib = await deploy();
 
-    expect(await nftextLib.decode([0x12])).to.equal("░▒");
+    expect(await nftextLib.decode([0x12, 0x34])).to.equal("░▒▓│");
   });
 });
