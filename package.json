@@ -1,0 +1,8 @@
+{
+  "name": "nftext-andrew",
+  "version": "0.0.0",
+  "main": "dist/src/index.js",
+  "author": "Andrew Morris",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "private": true
+}
