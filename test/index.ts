@@ -31,13 +31,18 @@ describe("NFTextLib", function () {
   it("decodes 2x2 box", async () => {
     const nftextLib = await deploy();
 
+    // off-chain encoder
     const boxData = encodeLines(
       "┌┐",
       "└┘",
     );
 
+    // 3 bytes to be stored on chain
     expect(boxData.toString('hex')).to.equal('02e67d');
+
+    // on-chain decoder
     expect(await nftextLib.decode(boxData)).to.equal("┌┐\n└┘\n");
+    // This unicode string is 14 bytes uncompressed
   });
 
   it("decodes 4x4 box", async () => {
