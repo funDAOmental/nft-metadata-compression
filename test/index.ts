@@ -27,7 +27,7 @@ describe("NFTextLib", function () {
   it("decodes", async () => {
     const nftextLib = await deploy();
 
-    expect(await nftextLib.decode([123])).to.equal("123-first");
-    expect(await nftextLib.decode([124])).to.equal("not 123-first");
+    expect(await nftextLib.decode([0])).to.equal("x..");
+    expect(await nftextLib.decode([1])).to.equal("y..");
   });
 });
