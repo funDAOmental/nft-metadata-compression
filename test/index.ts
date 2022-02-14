@@ -39,4 +39,18 @@ describe("NFTextLib", function () {
     expect(boxData.toString('hex')).to.equal('02e67d');
     expect(await nftextLib.decode(boxData)).to.equal("┌┐\n└┘\n");
   });
+
+  it("decodes 4x4 box", async () => {
+    const nftextLib = await deploy();
+
+    const boxData = encodeLines(
+      "┌──┐",
+      "│░▒│",
+      "│▒░│",
+      "└──┘",
+    );
+
+    expect(boxData.toString('hex')).to.equal('04ebb6412442147bbd');
+    expect(await nftextLib.decode(boxData)).to.equal("┌──┐\n│░▒│\n│▒░│\n└──┘\n");
+  });
 });
