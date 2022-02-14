@@ -1,19 +1,33 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("Greeter", function () {
-  it("Should return the new greeting once it's changed", async function () {
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
+// eslint-disable-next-line node/no-missing-import
+import { NFTextLib } from "../typechain/index";
 
-    expect(await greeter.greet()).to.equal("Hello, world!");
+const deploy = (() => {
+  let nftextLib: NFTextLib | undefined;
 
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
+  return async () => {
+    if (nftextLib !== undefined) {
+      return nftextLib;
+    }
 
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
+    const NFTextLib = await ethers.getContractFactory("NFTextLib");
+    nftextLib = await (await NFTextLib.deploy()).deployed();
 
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
+    return nftextLib;
+  };
+})();
+
+describe("NFTextLib", function () {
+  it("Should deploy", async () => {
+    await deploy();
+  });
+
+  it("decodes", async () => {
+    const nftextLib = await deploy();
+
+    expect(await nftextLib.decode([123])).to.equal("123-first");
+    expect(await nftextLib.decode([124])).to.equal("not 123-first");
   });
 });
