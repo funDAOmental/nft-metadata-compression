@@ -4,32 +4,32 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 // eslint-disable-next-line node/no-missing-import
-import { NFTextLib } from "../typechain/index";
+import { NFTxtLib } from "../typechain/index";
 // eslint-disable-next-line node/no-missing-import
 import { encodeLines } from "../encode";
 
 const deploy = (() => {
-  let nftextLib: NFTextLib | undefined;
+  let nftxtLib: NFTxtLib | undefined;
 
   return async () => {
-    if (nftextLib !== undefined) {
-      return nftextLib;
+    if (nftxtLib !== undefined) {
+      return nftxtLib;
     }
 
-    const NFTextLib = await ethers.getContractFactory("NFTextLib");
-    nftextLib = await (await NFTextLib.deploy()).deployed();
+    const NFTxtLib = await ethers.getContractFactory("NFTxtLib");
+    nftxtLib = await (await NFTxtLib.deploy()).deployed();
 
-    return nftextLib;
+    return nftxtLib;
   };
 })();
 
-describe("NFTextLib", function () {
+describe("NFTxtLib", function () {
   it("Should deploy", async () => {
     await deploy();
   });
 
   it("decodes 2x2 box", async () => {
-    const nftextLib = await deploy();
+    const nftxtLib = await deploy();
 
     // off-chain encoder
     const boxData = encodeLines(
@@ -41,12 +41,12 @@ describe("NFTextLib", function () {
     expect(boxData.toString('hex')).to.equal('02e67d');
 
     // on-chain decoder
-    expect(await nftextLib.decode(boxData)).to.equal("┌┐\n└┘\n");
+    expect(await nftxtLib.decode(boxData)).to.equal("┌┐\n└┘\n");
     // This unicode string is 14 bytes uncompressed
   });
 
   it("decodes 4x4 box", async () => {
-    const nftextLib = await deploy();
+    const nftxtLib = await deploy();
 
     const boxData = encodeLines(
       "┌──┐",
@@ -56,6 +56,6 @@ describe("NFTextLib", function () {
     );
 
     expect(boxData.toString('hex')).to.equal('04ebb6412442147bbd');
-    expect(await nftextLib.decode(boxData)).to.equal("┌──┐\n│░▒│\n│▒░│\n└──┘\n");
+    expect(await nftxtLib.decode(boxData)).to.equal("┌──┐\n│░▒│\n│▒░│\n└──┘\n");
   });
 });
