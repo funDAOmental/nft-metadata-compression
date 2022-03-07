@@ -27,6 +27,24 @@ class BufOutputStream {
   }
 }
 
+class BitOutputStream {
+  bufOutputStream = new BufOutputStream();
+  currByte = 0;
+  bitPos = 7;
+
+  write(bit: number) {
+    this.currByte |= bit << this.bitPos;
+
+    if (this.bitPos === 0) {
+      this.bufOutputStream.write(Uint8Array.from([this.currByte]));
+      this.currByte = 0;
+      this.bitPos = 7;
+    } else {
+      this.bitPos--;
+    }
+  }
+}
+
 export function huffmanCompress(buf: Uint8Array) {
   const frequencies: Record<string, number> = {};
   const output = new BufOutputStream();
@@ -45,9 +63,27 @@ export function huffmanCompress(buf: Uint8Array) {
     row.freq = Math.ceil((row.freq * 255) / topFreq);
   }
 
-  const tree = createTree(freqTable);
+  freqTable.push({ char: 0, freq: 0 });
 
-  return summarizeHuffmanTree(tree);
+  for (const { char, freq } of freqTable) {
+    output.write(Uint8Array.from([char, freq]));
+  }
+
+  const tree = createTree(freqTable);
+  const treeLookupTable = TreeLookupTable(tree);
+  const bitsOutput = new BitOutputStream();
+
+  for (const char of buf) {
+    const bits = treeLookupTable[String(char)];
+
+    for (const b of bits) {
+      bitsOutput.write(b);
+    }
+  }
+
+  output.write(bitsOutput.bufOutputStream.Buf());
+
+  return output.Buf();
 }
 
 export function huffmanDecompress(buf: Uint8Array) {}
@@ -79,6 +115,23 @@ function createTree(
   }
 
   return treeTable[0].tree;
+}
+
+function TreeLookupTable(tree: BinaryTree<number>): Record<string, number[]> {
+  const lookupTable: Record<string, number[]> = {};
+
+  function processTree(prefix: number[], subTree: BinaryTree<number>) {
+    if ("leaf" in subTree) {
+      lookupTable[String(subTree.leaf)] = prefix;
+    } else {
+      processTree([...prefix, 0], subTree.left);
+      processTree([...prefix, 1], subTree.right);
+    }
+  }
+
+  processTree([], tree);
+
+  return lookupTable;
 }
 
 function summarizeHuffmanTree(root: BinaryTree<number>) {
