@@ -111,7 +111,7 @@ export function huffmanCompress(buf: Uint8Array) {
   const treeLookupTable = TreeLookupTable(tree);
   const bitsOutput = new BitWriteStream();
 
-  for (const char of buf) {
+  function writeChar(char: number) {
     const bits = treeLookupTable[String(char)];
 
     for (const b of bits) {
@@ -119,12 +119,54 @@ export function huffmanCompress(buf: Uint8Array) {
     }
   }
 
+  for (const char of buf) {
+    writeChar(char);
+  }
+
+  writeChar(0);
+
   output.write(bitsOutput.bufWriteStream.Buf());
 
   return output.Buf();
 }
 
-export function huffmanDecompress(buf: Uint8Array) {}
+export function huffmanDecompress(buf: Uint8Array) {
+  const bytes = new BufReadStream(buf);
+  const freqTable: { char: number; freq: number }[] = [];
+  const output = new BufWriteStream();
+
+  while (true) {
+    const [char, freq] = bytes.read(2);
+    freqTable.push({ char, freq });
+
+    if (freq === 0) {
+      break;
+    }
+  }
+
+  const tree = createTree(freqTable);
+  const bits = new BitReadStream(bytes.read(Infinity));
+
+  while (true) {
+    let subTree = tree;
+
+    while (!("leaf" in subTree)) {
+      if (bits.read() === 0) {
+        subTree = subTree.left;
+      } else {
+        subTree = subTree.right;
+      }
+    }
+
+    if (subTree.leaf === 0) {
+      break;
+    }
+
+    output.write(Uint8Array.from([subTree.leaf]));
+  }
+
+  return output.Buf();
+}
 
 type BinaryTree<T> =
   | { leaf: T }
