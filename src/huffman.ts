@@ -1,4 +1,4 @@
-class BufOutputStream {
+class BufWriteStream {
   capacity = 1024;
   buf: Uint8Array = new Uint8Array(this.capacity);
   len = 0;
@@ -27,8 +27,8 @@ class BufOutputStream {
   }
 }
 
-class BitOutputStream {
-  bufOutputStream = new BufOutputStream();
+class BitWriteStream {
+  bufWriteStream = new BufWriteStream();
   currByte = 0;
   bitPos = 7;
 
@@ -36,7 +36,7 @@ class BitOutputStream {
     this.currByte |= bit << this.bitPos;
 
     if (this.bitPos === 0) {
-      this.bufOutputStream.write(Uint8Array.from([this.currByte]));
+      this.bufWriteStream.write(Uint8Array.from([this.currByte]));
       this.currByte = 0;
       this.bitPos = 7;
     } else {
@@ -47,7 +47,7 @@ class BitOutputStream {
 
 export function huffmanCompress(buf: Uint8Array) {
   const frequencies: Record<string, number> = {};
-  const output = new BufOutputStream();
+  const output = new BufWriteStream();
 
   for (const c of buf) {
     frequencies[c] = (frequencies[c] ?? 0) + 1;
@@ -71,7 +71,7 @@ export function huffmanCompress(buf: Uint8Array) {
 
   const tree = createTree(freqTable);
   const treeLookupTable = TreeLookupTable(tree);
-  const bitsOutput = new BitOutputStream();
+  const bitsOutput = new BitWriteStream();
 
   for (const char of buf) {
     const bits = treeLookupTable[String(char)];
@@ -81,7 +81,7 @@ export function huffmanCompress(buf: Uint8Array) {
     }
   }
 
-  output.write(bitsOutput.bufOutputStream.Buf());
+  output.write(bitsOutput.bufWriteStream.Buf());
 
   return output.Buf();
 }
