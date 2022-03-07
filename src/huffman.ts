@@ -27,6 +27,20 @@ class BufWriteStream {
   }
 }
 
+class BufReadStream {
+  pos = 0;
+
+  // eslint-disable-next-line no-useless-constructor
+  constructor(public buf: Uint8Array) {}
+
+  read(len: number) {
+    const res = this.buf.subarray(this.pos, this.pos + len);
+    this.pos += len;
+
+    return res;
+  }
+}
+
 class BitWriteStream {
   bufWriteStream = new BufWriteStream();
   currByte = 0;
@@ -42,6 +56,30 @@ class BitWriteStream {
     } else {
       this.bitPos--;
     }
+  }
+}
+
+class BitReadStream {
+  bufReadStream: BufReadStream;
+  bitPos = 7;
+  currByte: number;
+
+  constructor(buf: Uint8Array) {
+    this.bufReadStream = new BufReadStream(buf);
+    this.currByte = this.bufReadStream.read(1)[0] ?? 0;
+  }
+
+  read() {
+    const res = (this.currByte >> this.bitPos) & 1;
+
+    if (this.bitPos === 0) {
+      this.currByte = this.bufReadStream.read(1)[0] ?? 0;
+      this.bitPos = 7;
+    } else {
+      this.bitPos--;
+    }
+
+    return res;
   }
 }
 
