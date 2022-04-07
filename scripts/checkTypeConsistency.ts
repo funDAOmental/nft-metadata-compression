@@ -2,37 +2,35 @@
 import fs from "fs/promises";
 
 import * as io from "io-ts";
-import reporter from "io-ts-reporters";
+import decode from "../src/decode";
 
 const NftMetadata = io.type({
   image: io.string,
   attributes: io.array(
     io.type({
       trait_type: io.string,
+      // display_type: io.union([io.undefined, io.literal("number")]),
       value: io.string,
     })
   ),
 });
 
-function decode<T extends io.Mixed>(type: T, value: unknown): io.TypeOf<T> {
-  const decodeResult = type.decode(value);
-
-  if ("left" in decodeResult) {
-    throw new Error(reporter.report(decodeResult).join("\n"));
-  }
-
-  return decodeResult.right;
-}
-
 (async () => {
-  const boredApesJson = JSON.parse(
+  const nftsJson = JSON.parse(
     await fs.readFile(
-      `${__dirname}/../../metadata-samples/boredApes.json`,
+      `${__dirname}/../../metadata-samples/timelessCharacters.json`,
       "utf-8"
     )
   );
 
-  for (const boredApeJson of boredApesJson) {
-    decode(NftMetadata, boredApeJson);
+  for (let i = 0; i < nftsJson.length; i++) {
+    const nftJson = nftsJson[i];
+
+    try {
+      decode(NftMetadata, nftJson);
+    } catch (error) {
+      console.log(i, nftJson);
+      throw error;
+    }
   }
 })();

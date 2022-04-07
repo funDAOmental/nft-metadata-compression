@@ -21,5 +21,11 @@ module.exports = {
       { ignores: ["modules"] },
     ],
     "no-unused-vars": "warn",
+    "no-redeclare": "off",
+    "node/no-missing-import": "off",
+    "no-unused-expressions": "warn",
+    "no-useless-constructor": "off",
+    "prefer-const": "warn",
+    "node/no-unsupported-features/es-builtins": "off",
   },
 };
