@@ -1,7 +1,7 @@
 import BasicNftMetadata from "./BasicNftMetadata";
 import RecordWithDefault from "./RecordWithDefault";
 
-export type TraitsTable = Record<
+export type AttributesTable = Record<
   string,
   {
     total: number;
@@ -9,20 +9,20 @@ export type TraitsTable = Record<
   }
 >;
 
-export default function gatherTraits(
+export default function gatherAttributes(
   collection: BasicNftMetadata[]
-): TraitsTable {
-  const traits = new RecordWithDefault(() => new RecordWithDefault(() => 0));
+): AttributesTable {
+  const attributes = new RecordWithDefault(() => new RecordWithDefault(() => 0));
 
   for (const nft of collection) {
     for (const attribute of nft.attributes) {
-      const trait = traits.get(attribute.trait_type);
+      const trait = attributes.get(attribute.trait_type);
       trait.set(attribute.value, trait.get(attribute.value) + 1);
     }
   }
 
   return Object.fromEntries(
-    Object.entries(traits.data).map(([trait, table]) => {
+    Object.entries(attributes.data).map(([trait, table]) => {
       return [
         trait,
         {

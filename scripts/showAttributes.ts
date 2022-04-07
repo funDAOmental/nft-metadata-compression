@@ -6,9 +6,11 @@ import * as io from "io-ts";
 import * as tb from "typed-bytes";
 
 import BasicNftMetadata from "../src/BasicNftMetadata";
-import buildTraitsSchema, { TraitsSchema } from "../src/buildTraitsSchema";
+import buildAttributesSchema, {
+  AttributesSchema,
+} from "../src/buildAttributesSchema";
 import decode from "../src/decode";
-import gatherTraits from "../src/gatherTraits";
+import gatherAttributes from "../src/gatherAttributes";
 
 (async () => {
   const nftsJson = JSON.parse(
@@ -20,14 +22,14 @@ import gatherTraits from "../src/gatherTraits";
 
   const collection = decode(io.array(BasicNftMetadata), nftsJson);
 
-  const traits = gatherTraits(collection);
+  const attributes = gatherAttributes(collection);
 
-  console.log("stats", JSON.stringify(traits, null, 2));
+  console.log("stats", JSON.stringify(attributes, null, 2));
 
-  const schema = buildTraitsSchema(traits);
+  const schema = buildAttributesSchema(attributes);
   console.log("schema", JSON.stringify(schema, null, 2));
 
-  const encodedSchema = TraitsSchema.encode(schema);
+  const encodedSchema = AttributesSchema.encode(schema);
 
   console.log(
     "encoded schema",
