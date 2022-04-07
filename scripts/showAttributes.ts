@@ -1,15 +1,17 @@
 /* eslint-disable node/no-path-concat */
 
+import "source-map-support/register";
+
 import fs from "fs/promises";
 
 import * as io from "io-ts";
-import * as tb from "typed-bytes";
 
 import BasicNftMetadata from "../src/BasicNftMetadata";
 import buildAttributesSchema, {
   AttributesSchema,
 } from "../src/buildAttributesSchema";
 import decode from "../src/decode";
+import decodeAttributes from "../src/decodeAttributes";
 import encodeAttributes from "../src/encodeAttributes";
 import gatherAttributes from "../src/gatherAttributes";
 
@@ -53,4 +55,14 @@ import gatherAttributes from "../src/gatherAttributes";
       JSON.stringify(nftSample.attributes).length
     } (json)`
   );
+
+  const decodedAttributes = decodeAttributes(schema, encodedAttributes);
+
+  if (
+    JSON.stringify(decodedAttributes) === JSON.stringify(nftSample.attributes)
+  ) {
+    console.log("decodes correctly ✅");
+  } else {
+    console.log("decode failed", JSON.stringify(decodedAttributes, null, 2));
+  }
 })().catch(console.error);
