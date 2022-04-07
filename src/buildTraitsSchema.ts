@@ -3,11 +3,11 @@ import * as tb from "typed-bytes";
 import { TraitsTable } from "./gatherTraits";
 
 export const TraitsSchema = tb.Object({
-  traitSize: tb.number,
+  traitSize: tb.byte,
   traits: tb.Array(
     tb.Object({
       name: tb.string,
-      size: tb.number,
+      size: tb.byte,
       values: tb.Array(tb.string),
     })
   ),
