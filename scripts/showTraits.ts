@@ -3,15 +3,17 @@
 import fs from "fs/promises";
 
 import * as io from "io-ts";
+import * as tb from "typed-bytes";
 
 import BasicNftMetadata from "../src/BasicNftMetadata";
+import buildTraitsSchema, { TraitsSchema } from "../src/buildTraitsSchema";
 import decode from "../src/decode";
 import gatherTraits from "../src/gatherTraits";
 
 (async () => {
   const nftsJson = JSON.parse(
     await fs.readFile(
-      `${__dirname}/../../metadata-samples/boredApes.json`,
+      `${__dirname}/../../metadata-samples/timelessCharacters.json`,
       "utf-8"
     )
   );
@@ -20,17 +22,16 @@ import gatherTraits from "../src/gatherTraits";
 
   const traits = gatherTraits(collection);
 
-  const traitsJson = Object.fromEntries(
-    Object.entries(traits.data).map(([trait, table]) => {
-      return [
-        trait,
-        {
-          total: Object.values(table.data).reduce((a, b) => a + b, 0),
-          byValue: table.data,
-        },
-      ];
-    })
-  );
+  console.log("stats", JSON.stringify(traits, null, 2));
 
-  console.log(JSON.stringify(traitsJson, null, 2));
+  const schema = buildTraitsSchema(traits);
+  console.log("schema", JSON.stringify(schema, null, 2));
+
+  const encodedSchema = TraitsSchema.encode(schema);
+
+  console.log(
+    "encoded schema",
+    `${encodedSchema.length} bytes`,
+    `0x${Buffer.from(encodedSchema).toString("hex")}`
+  );
 })().catch(console.error);

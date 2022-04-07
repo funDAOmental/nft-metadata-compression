@@ -9190,6 +9190,11 @@ typechain@^5.1.2:
     prettier "^2.1.2"
     ts-essentials "^7.0.1"
 
+typed-bytes@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/typed-bytes/-/typed-bytes-0.2.1.tgz#baa7e3e74c3f26018eeebd1593ee315c323cc9b1"
+  integrity sha512-WO1c7v51Yh5K8+G2YuqbRn20Dqjx7PO9ify5A5wQtGQz33eYhCGutjz1UvXK393XUT43X+ZGgaCiHfhqyHLjvQ==
+
 typedarray-to-buffer@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/typedarray-to-buffer/-/typedarray-to-buffer-3.1.5.tgz#a97ee7a9ff42691b9f783ff1bc5112fe3fca9080"
