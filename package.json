@@ -6,7 +6,10 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "private": true,
   "dependencies": {
+    "fp-ts": "^2.11.9",
     "hardhat": "^2.8.4",
+    "io-ts": "^2.2.16",
+    "io-ts-reporters": "^2.0.1",
     "node-fetch": "^3.2.3"
   },
   "devDependencies": {
