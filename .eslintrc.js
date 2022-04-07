@@ -27,5 +27,6 @@ module.exports = {
     "no-useless-constructor": "off",
     "prefer-const": "warn",
     "node/no-unsupported-features/es-builtins": "off",
+    "prettier/prettier": "warn",
   },
 };

@@ -3,7 +3,7 @@ import * as tb from "typed-bytes";
 import { AttributesTable } from "./gatherAttributes";
 
 export const AttributesSchema = tb.Object({
-  attributesize: tb.byte,
+  attributeSize: tb.byte,
   attributes: tb.Array(
     tb.Object({
       name: tb.string,
@@ -21,7 +21,7 @@ export default function buildAttributesSchema(
   const traitNames = Object.keys(attributes);
 
   return {
-    attributesize: getEncodedSize(traitNames.length),
+    attributeSize: getEncodedSize(traitNames.length),
     attributes: traitNames.map((traitName) => {
       return {
         name: traitName,

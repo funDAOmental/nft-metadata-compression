@@ -10,6 +10,7 @@ import buildAttributesSchema, {
   AttributesSchema,
 } from "../src/buildAttributesSchema";
 import decode from "../src/decode";
+import encodeAttributes from "../src/encodeAttributes";
 import gatherAttributes from "../src/gatherAttributes";
 
 (async () => {
@@ -35,5 +36,21 @@ import gatherAttributes from "../src/gatherAttributes";
     "encoded schema",
     `${encodedSchema.length} bytes`,
     `0x${Buffer.from(encodedSchema).toString("hex")}`
+  );
+
+  const nftSample = collection[Math.floor(Math.random() * collection.length)];
+
+  console.log("nft sample", nftSample);
+  const encodedAttributes = encodeAttributes(schema, nftSample);
+
+  console.log(
+    "encoded attributes",
+    `0x${Buffer.from(encodedAttributes).toString("hex")}`
+  );
+
+  console.log(
+    `size comparison: ${encodedAttributes.length} (encoded) vs ${
+      JSON.stringify(nftSample.attributes).length
+    } (json)`
   );
 })().catch(console.error);
